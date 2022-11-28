@@ -9,14 +9,23 @@ interface Props {
   selecionado: ITarefa | undefined;
 }
 
-export default function Cronometro( {selecionado}: Props ) {
+export default function Cronometro({ selecionado }: Props) {
   const [tempo, setTempo] = useState<number>();
 
-  useEffect( () => {
+  useEffect(() => {
     if (selecionado?.tempo) {
-      setTempo(tempoParaSegundos((selecionado.tempo)) )
+      setTempo(tempoParaSegundos((selecionado.tempo)))
     }
-  },[selecionado])
+  }, [selecionado])
+
+  function regressiva(contador: number = 0) {
+    setTimeout(() => {
+      if (contador > 0) {
+        setTempo((contador - 1))
+        return regressiva(contador - 1)
+      }
+    }, 1000);
+  }
 
 
   return (
@@ -25,7 +34,9 @@ export default function Cronometro( {selecionado}: Props ) {
       <div className={style.relogioWrapper}>
         <Relogio tempo={tempo} />
       </div>
-      <Botao>Começar!</Botao>
+      <Botao onClick={() => regressiva(tempo)}>
+        Começar!
+      </Botao>
     </div>
   );
 }
